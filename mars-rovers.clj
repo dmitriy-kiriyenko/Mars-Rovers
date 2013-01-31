@@ -32,7 +32,8 @@
         dir (name (last (first result)))]
     (.write file-writer (str x " " y " " dir "\n"))))
 
-; -----------------------------------------------------------------
+; -----------------------------------------------------------------------------
+
 (defn- remain-between [n min-boundary max-boundary]
   (min max-boundary (max n min-boundary)))
 
@@ -59,18 +60,18 @@
 (defn- end-point [rover plateau steps]
   (reduce move [rover plateau] steps))
 
-(defn- create-initial-rover [rover-data plateau]
-  (create-rover (conj (str-to-xy (first rover-data))
-                      (str-to-dir (first rover-data)))
+(defn- create-initial-rover [xy-string plateau]
+  (create-rover (conj (str-to-xy xy-string)
+                      (str-to-dir xy-string))
                 plateau))
 
 (defn- process-with-open [file-reader file-writer]
   (let [max-coords (xy-max file-reader)
         plateau {:x-min x-min :x-max (first max-coords) :y-min y-min :y-max (last max-coords)}]
     (doseq [rover-data (partition 2 (line-seq file-reader))]
-      (let [rover (create-initial-rover rover-data plateau)
-            steps (str-to-keywords (last rover-data))]
-        (write-result (end-point rover plateau steps)
+      (let [rover (create-initial-rover (first rover-data) plateau)
+            path (str-to-keywords (last rover-data))]
+        (write-result (end-point rover plateau path)
                       file-writer)))))
 
 (defn process [in-file-name out-file-name]
