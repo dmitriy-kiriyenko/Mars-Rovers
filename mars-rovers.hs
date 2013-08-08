@@ -16,7 +16,7 @@ act L   (Rover x y h) = Rover x y (turn (-1) h)
 act R   (Rover x y h) = Rover x y (turn   1  h)
 act M r@(Rover x y h) = move r $ delta h
 
-action commands = foldr (.) id $ reverse $ map act commands
+action commands = foldr1 (flip (.)) $ map act commands
 
 toList x = [x]
 readRover    input = read ("Rover " ++ input)
