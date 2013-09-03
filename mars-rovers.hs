@@ -1,3 +1,5 @@
+import Data.List
+
 data Head = N | E | S | W deriving (Show, Read, Enum, Bounded)
 data Rover = Rover Int Int Head deriving (Show, Read)
 data Command = L | R | M deriving (Show, Read)
@@ -24,12 +26,9 @@ readCommands input = map (read . toList) input
 
 travel rover commands = action (readCommands commands) (readRover rover)
 
-work = do
-  rover    <- getLine
-  commands <- getLine
-  putStrLn $ show $ travel rover commands
-  work
+work input = intercalate "\n" $ map (show . (uncurry travel)) input
 
-main = do
-  skip <- getLine
-  work
+toPairs [] = []
+toPairs (p:r:rest) = (p, r) : toPairs rest
+
+main = interact (work . toPairs . tail . lines)
